@@ -30,7 +30,7 @@ function env_replace {
     key=$1
     val=$2
     filename=$3
-    sed "s|${key}=.*|${key}=${val}|" -i $filename
+    sed "s|^${key}=.*|${key}=${val}|" -i $filename
 }
 
 function env_tmpl_replace {
