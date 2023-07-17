@@ -1,12 +1,12 @@
 version: "3"
 name: "outline"
 services:
-  wk-redis:
+  redis:
     image: redis:latest
     restart: always
     networks:
       - ${NETWORKS}
-  wk-postgres:
+  postgres:
     image: postgres:${POSTGRES_VERSION}
     environment:
       POSTGRES_USER: user
@@ -17,7 +17,7 @@ services:
     restart: always
     networks:
       - ${NETWORKS}
-  wk-minio:
+  minio:
     image: minio/minio:${MINIO_VERSION}
     volumes:
       - ./data/minio_root:/minio_root:z
@@ -28,10 +28,10 @@ services:
     restart: always
     networks:
       - ${NETWORKS}
-  wk-createbuckets:
+  createbuckets:
     image: minio/mc:${MINIO_MC_VERSION}
     depends_on:
-      - wk-minio
+      - minio
     env_file:
       - ./env.minio
     entrypoint: >
@@ -43,25 +43,25 @@ services:
       "
     networks:
       - ${NETWORKS}
-  wk-outline:
+  outline:
     image: outlinewiki/outline:${OUTLINE_VERSION}
     command: sh -c "yarn db:migrate --env production-ssl-disabled && yarn start"
     environment:
-      - DATABASE_URL=postgres://user:pass@wk-postgres:5432/outline
-      - DATABASE_URL_TEST=postgres://user:pass@wk-postgres:5432/outline-test
-      - REDIS_URL=redis://wk-redis:6379
+      - DATABASE_URL=postgres://user:pass@postgres:5432/outline
+      - DATABASE_URL_TEST=postgres://user:pass@postgres:5432/outline-test
+      - REDIS_URL=redis://redis:6379
       - AWS_S3_UPLOAD_BUCKET_NAME=outline-bucket
     env_file:
       - ./env.outline
       - ./env.oidc
     restart: always
     depends_on:
-      - wk-postgres
-      - wk-redis
-      - wk-minio
+      - postgres
+      - redis
+      - minio
     networks:
       - ${NETWORKS}
-  wk-oidc-server:
+  oidc-server:
     image: vicalloy/oidc-server
     volumes:
       - ./config/uc/fixtures:/app/oidc_server/fixtures:z
@@ -72,7 +72,7 @@ services:
       - ./env.oidc-server
     networks:
       - ${NETWORKS}
-  wk-nginx:
+  nginx:
     image: nginx
     ports:
       - ${HTTP_IP}:${HTTP_PORT_IP}:80
@@ -81,9 +81,9 @@ services:
       - ./data/uc/static_root:/uc/static_root:ro
     restart: always
     depends_on:
-      - wk-minio
-      - wk-outline
-      - wk-oidc-server
+      - minio
+      - outline
+      - oidc-server
     networks:
       - ${NETWORKS}
 networks:

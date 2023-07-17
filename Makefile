@@ -1,4 +1,4 @@
-oidc_server_container=wk-oidc-server
+oidc_server_container=oidc-server
 docker-compose := $(shell command -v docker-compose 2> /dev/null || echo "docker compose")
 
 gen-conf:

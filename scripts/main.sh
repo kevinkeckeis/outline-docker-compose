@@ -129,7 +129,7 @@ function init_cfg {
 
 function reload_nginx {
     cd ..;
-    until docker-compose exec wk-nginx nginx -s reload
+    until docker-compose exec nginx nginx -s reload
     do
         echo "waiting nginx"
         sleep 1
