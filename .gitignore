@@ -1,2 +1,5 @@
 data/
 scripts/config.sh
+.env
+docker-compose.yml
+env.*
