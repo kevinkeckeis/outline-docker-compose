@@ -40,8 +40,8 @@ function create_minio_env_file {
     fn=env.minio
     env_file=../$fn
     cp ./templates/$fn $env_file
-    env_replace MINIO_ACCESS_KEY $MINIO_ACCESS_KEY $env_file
-    env_replace MINIO_SECRET_KEY $MINIO_SECRET_KEY $env_file
+    env_replace MINIO_ROOT_USER $MINIO_ACCESS_KEY $env_file
+    env_replace MINIO_ROOT_PASSWORD $MINIO_SECRET_KEY $env_file
 }
 
 function create_outline_env_file {
