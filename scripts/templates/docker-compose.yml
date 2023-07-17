@@ -1,4 +1,5 @@
 version: "3"
+name: "outline"
 services:
   wk-redis:
     image: redis:latest
